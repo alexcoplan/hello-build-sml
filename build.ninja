@@ -8,9 +8,20 @@ rule h2e
 rule bootstrap
   command = util/bootstrap.py
 
+rule stamp
+  command = $in && touch $out
+  description = STAMP $in
+
 build build/h2a/heap2exec : bootstrap | util/bootstrap.py
 
 build build/myprog.amd64-darwin : mlbuild myproglib.cm | util/mlbuild.py
   main = MyProg.main
 
+build build/mytest.amd64-darwin : mlbuild mytest.cm | util/mlbuild.py
+  main = MyTest.main
+
+build build/mytest : h2e build/mytest.amd64-darwin | build/h2a/heap2exec
+
 build build/myprog : h2e build/myprog.amd64-darwin | build/h2a/heap2exec
+
+build build/test/mytest.stamp : stamp build/mytest

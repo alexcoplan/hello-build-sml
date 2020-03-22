@@ -1,0 +1,5 @@
+Library
+  structure MyTest
+is
+  mytest.sml
+  $/basis.cm
