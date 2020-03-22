@@ -4,9 +4,9 @@
 # a depfile for the CM build at hand.
 
 import argparse
-import subprocess
 import os
 import tempfile
+import build_script as bs
 
 def gen_ml(args):
   return f"""
@@ -28,37 +28,6 @@ in
 end
 """
 
-logbuf = ""
-def log(msg):
-  global logbuf
-  logbuf += msg
-
-def logln(msg):
-  global logbuf
-  logbuf += (msg + "\n")
-
-def fail():
-  print(logbuf)
-  exit(1)
-
-def run(cmd, **kwargs):
-  log("Running " + " ".join(cmd) + " ... ")
-  res = subprocess.run(cmd, capture_output=True, **kwargs)
-  if res.returncode == 0:
-    logln("OK")
-    return
-  logln("FAILED")
-  stdout = res.stdout.decode("utf-8").strip()
-  stderr = res.stderr.decode("utf-8").strip()
-  if len(stdout) > 0:
-    logln("Output (stdout):")
-    log(stdout)
-  if len(stderr) > 0:
-    logln("Output (stderr):")
-    log(stderr)
-
-  fail()
-
 def main():
   parser = argparse.ArgumentParser()
   parser.add_argument("--depfile", type=str)
@@ -69,7 +38,7 @@ def main():
   args = parser.parse_args()
 
   cmd = ["ml-build", args.cmfile, args.main, args.heapfile]
-  run(cmd)
+  bs.run(cmd)
 
   if args.depfile is not None:
     ml_src = gen_ml(args)
@@ -81,7 +50,7 @@ def main():
       os.unlink(args.depfile)
     assert not os.path.exists(args.depfile)
     ml_src = gen_ml(args)
-    run(["sml", tf_name],
+    bs.run(["sml", tf_name],
         input='', # non-interactive
         check=True)
     assert os.path.exists(args.depfile)
