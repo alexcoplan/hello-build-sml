@@ -8,7 +8,7 @@ import os
 import tempfile
 import build_script as bs
 
-def gen_ml(args):
+def gen_ml(args : argparse.Namespace) -> str:
   return f"""
 let
   val depfile = \"{args.depfile}\"
@@ -28,7 +28,7 @@ in
 end
 """
 
-def main():
+def main() -> None:
   parser = argparse.ArgumentParser()
   parser.add_argument("--depfile", type=str)
   parser.add_argument("--cmfile", type=str, required=True)
@@ -50,9 +50,7 @@ def main():
       os.unlink(args.depfile)
     assert not os.path.exists(args.depfile)
     ml_src = gen_ml(args)
-    bs.run(["sml", tf_name],
-        input='', # non-interactive
-        check=True)
+    bs.run(["sml", tf_name], input='')
     assert os.path.exists(args.depfile)
     os.unlink(tf_name)
 

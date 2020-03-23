@@ -12,7 +12,7 @@ jobs:
     - name: apt-install-deps
       run: sudo apt install ninja-build mypy smlnj
     - name: mypy
-      run: mypy --strict configure.py
+      run: mypy --strict configure.py util/mlbuild.py util/bootstrap.py
     - name: configure
       run: ./configure.py
     - name: ninja

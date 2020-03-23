@@ -15,6 +15,9 @@ if not (os.path.exists(h2a_dir) and os.path.exists(h2a_script)):
   bs.run(cmd)
 
 sys.path.insert(0, os.getcwd())
-import build.h2a.bootstrap as bstrap
+
+# We ignore the type here since this an import that can only succeed at runtime.
+import build.h2a.bootstrap as bstrap # type: ignore
+
 os.chdir(h2a_dir)
 bstrap.main()
