@@ -40,6 +40,17 @@ def main() -> None:
   cmd = ["ml-build", args.cmfile, args.main, args.heapfile]
   bs.run(cmd)
 
+  # Note: if CM feels it doesn't need to re-build, then it doesn't even
+  # touch the heapfile.
+  #
+  # This is bad as it is possible that e.g. this script has been updated and
+  # that forces a heap image re-build, but the timestamp on the heap image never
+  # gets updated so ninja keeps trying to re-build it.
+  #
+  # To get around that, we touch the heap image here.
+  assert os.path.exists(args.heapfile) and os.path.isfile(args.heapfile)
+  bs.run(["touch", args.heapfile])
+
   if args.depfile is not None:
     ml_src = gen_ml(args)
     with tempfile.NamedTemporaryFile(mode='w', suffix='.sml', delete=False) as tf:
