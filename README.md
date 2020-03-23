@@ -7,6 +7,11 @@ as the compiler and ninja to orchestrate the build. Notable features are:
    with the standard smlnj distribution).
  - Uses CM to generate depfiles which ninja is then aware of (not supported by
    the standard tooling).
+ - This project comes with a working github CI setup (with a Linux runner), and
+   should also build just fine on macOS.
 
-Probably any real project wants to use a script to generate the ninja, but this
-is a good starting point.
+To build, ensure `SMLNJ_HOME` is set appropriately, and then:
+```
+./configure.py
+ninja
+```
